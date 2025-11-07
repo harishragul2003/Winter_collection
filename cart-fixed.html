@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Winter Collection</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --light-bg: #f8f9fa;
+            --border-color: #e9ecef;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7ff;
+            color: var(--text-color);
+            padding-top: 80px;
+        }
+
+        .cart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+            margin: 0 5px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px dashed rgba(67, 97, 238, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .empty-cart:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+        }
+
+        .empty-cart i {
+            font-size: 5rem;
+            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 50%, #3f37c9 100%);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            display: block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cart-container {
+                padding: 1.5rem;
+            }
+            
+            .product-image {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .summary-card {
+                position: static;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(43, 45, 66, 0.98); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="./img/img/logo.png" alt="Winter Collection" class="me-2" style="height: 32px;">
+                <span class="fw-bold d-none d-md-inline" style="font-size: 1.2rem;">WINTER</span>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Navigation Links -->
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="index.html">HOME</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="new-arrivals.html">NEW ARRIVALS</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link active fw-bold" href="collections.html">COLLECTIONS</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="sale.html">SALE</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="contact.html">CONTACT</a>
+                    </li>
+                </ul>
+
+                <!-- Right Side Icons -->
+                <div class="d-flex align-items-center">
+                    <!-- Search Toggle -->
+                    <button class="btn btn-link text-white me-2" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false" aria-controls="searchCollapse">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    
+                    <!-- Account -->
+                    <a href="login.html" class="btn btn-link text-white me-2" title="Account">
+                        <i class="far fa-user"></i>
+                    </a>
+                    
+                    <!-- Cart -->
+                    <a href="cart.html" class="btn btn-link text-white position-relative" title="Cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; display: none;">0</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Search Bar (Collapsible) -->
+            <div class="collapse w-100" id="searchCollapse">
+                <div class="d-flex mt-2">
+                    <input class="form-control me-2" type="search" placeholder="Search products..." aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Content -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-container">
+                    <h2 class="mb-4 d-flex align-items-center">
+                        <i class="fas fa-snowflake me-2" style="color: #4cc9f0;"></i>
+                        Your Shopping Cart
+                        <span class="badge bg-primary rounded-pill ms-2" id="cartCountBadge">0</span>
+                    </h2>
+                    
+                    <!-- Cart Items -->
+                    <div id="cartItems">
+                        <!-- Cart items will be dynamically added here -->
+                    </div>
+                    
+                    <!-- Empty Cart Message -->
+                    <div id="emptyCart" class="empty-cart d-none">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p class="text-muted" style="color: red !important;">Looks like you haven't added anything to your cart yet.</p>
+                        <a href="collections.html" class="btn btn-primary mt-3">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="summary-card">
+                    <h4 class="mb-4">Order Summary</h4>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span id="subtotal">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span id="shipping">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax</span>
+                        <span id="tax">$0.00</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5>Total</h5>
+                        <h5 id="total">$0.00</h5>
+                    </div>
+                    <button class="btn-checkout" id="checkoutBtn">Proceed to Checkout</button>
+                    <p class="text-center text-muted mt-3 small">Or <a href="collections.html" class="text-primary">continue shopping</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-3 mt-4" style="background: linear-gradient(135deg, #2b2d42 0%, #1a1a2e 100%); color: white; font-size: 0.85rem;">
+        <div class="container">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <h6 class="mb-2">Winter Collection</h6>
+                    <p class="small text-muted mb-2" style="color: white !important;">Your one-stop shop for the latest winter fashion trends.</p>
+                </div>
+                <div class="col-md-2">
+                    <h6 class="mb-2">Shop</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">New Arrivals</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Collections</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Sale</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h6 class="mb-2">Help</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Shipping Info</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Returns</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="mb-2">Newsletter</h6>
+                    <p class="small text-muted mb-2" style="color: white !important;">Subscribe for updates</p>
+                    <div class="input-group input-group-sm">
+                        <input type="email" class="form-control form-control-sm" placeholder="Your email" aria-label="Your email">
+                        <button class="btn btn-outline-light btn-sm" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="text-center small text-muted">
+                <p class="mb-0">&copy; 2023 Winter Collection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Cart JS -->
+    <script src="js/cart.js"></script>
+    
+    <script>
+    // Initialize cart manager
+    const cartManager = window.cartManager || new CartManager();
+    window.cartManager = cartManager;
+    
+    // DOM Elements
+    const cartItemsContainer = document.getElementById('cartItems');
+    const emptyCartMessage = document.getElementById('emptyCart');
+    const subtotalElement = document.getElementById('subtotal');
+    const shippingElement = document.getElementById('shipping');
+    const taxElement = document.getElementById('tax');
+    const totalElement = document.getElementById('total');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const cartCountElement = document.getElementById('cartCount');
+    const cartCountBadge = document.getElementById('cartCountBadge');
+    
+    // Cart items array
+    let cartItems = [];
+        
+    // Update cart count in the UI
+    function updateCartCount() {
+        const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
+        if (cartCountElement) {
+            cartCountElement.textContent = totalItems;
+            cartCountElement.style.display = totalItems > 0 ? 'inline-block' : 'none';
+        }
+        if (cartCountBadge) {
+            cartCountBadge.textContent = totalItems;
+        }
+    }
+        
+    // Calculate subtotal
+    function calculateSubtotal() {
+        return cartItems.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
+    }
+        
+    // Update order summary
+    function updateSummary(subtotal) {
+        const shipping = subtotal > 0 ? 9.99 : 0;
+        const tax = subtotal * 0.08; // 8% tax
+        const total = subtotal + shipping + tax;
+            
+        if (subtotalElement) subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+        if (shippingElement) shippingElement.textContent = shipping > 0 ? `$${shipping.toFixed(2)}` : 'Free';
+        if (taxElement) taxElement.textContent = `$${tax.toFixed(2)}`;
+        if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
+    }
+    
+    // Add animation to cart items when they're added
+    function animateCartItem(item) {
+        if (!item) return;
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        setTimeout(() => {
+            item.style.transition = 'all 0.5s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+        }, 100);
+    }
+    
+    // Create snowflakes animation
+    function createSnowflakes() {
+        const snowflakes = ["❄", "❅", "❆", "•", "✻", "✼"];
+        const container = document.body;
+        
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.textContent = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+            snowflake.style.position = 'fixed';
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.top = '-20px';
+            snowflake.style.fontSize = Math.random() * 20 + 10 + 'px';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+            snowflake.style.animation = `fall ${Math.random() * 10 + 5}s linear infinite`;
+            snowflake.style.animationDelay = Math.random() * 5 + 's';
+            snowflake.style.pointerEvents = 'none';
+            snowflake.style.userSelect = 'none';
+            snowflake.style.zIndex = '1000';
+            container.appendChild(snowflake);
+            
+            // Remove snowflake after animation completes
+            setTimeout(() => {
+                snowflake.remove();
+            }, 15000);
+        }
+        
+        // Create initial snowflakes
+        for (let i = 0; i < 30; i++) {
+            setTimeout(createSnowflake, Math.random() * 5000);
+        }
+        
+        // Continue creating snowflakes
+        setInterval(createSnowflake, 1000);
+    }
+    
+    // Remove item from cart
+    window.removeFromCart = function(id) {
+        cartManager.removeFromCart(id);
+        cartItems = cartManager.getCartItems();
+        renderCart();
+        
+        // Show notification
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
+        notification.role = 'alert';
+        notification.textContent = 'Item removed from cart';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    };
+    
+    // Update item quantity
+    window.updateQuantity = function(id, newQuantity) {
+        newQuantity = parseInt(newQuantity);
+        if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
+        
+        cartManager.updateQuantity(id, newQuantity);
+        cartItems = cartManager.getCartItems();
+        renderCart();
+    };
+    
+    // Render cart items
+    function renderCart() {
+        try {
+            // Refresh cart items from manager
+            cartItems = cartManager.getCartItems();
+            
+            if (!cartItemsContainer) {
+                console.error('Cart items container not found');
+                return;
+            }
+            
+            cartItemsContainer.innerHTML = '';
+            
+            if (!cartItems || cartItems.length === 0) {
+                if (emptyCartMessage) {
+                    emptyCartMessage.classList.remove('d-none');
+                }
+                updateSummary(0);
+                updateCartCount();
+                return;
+            }
+            
+            if (emptyCartMessage) emptyCartMessage.classList.add('d-none');
+            
+            cartItems.forEach(item => {
+                if (!item || typeof item !== 'object') return;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item mb-4 pb-4 border-bottom';
+                
+                const imageUrl = item.image || 'https://via.placeholder.com/100';
+                const itemName = item.name || 'Unnamed Item';
+                const itemPrice = typeof item.price === 'number' ? item.price : 0;
+                const itemQuantity = typeof item.quantity === 'number' ? Math.max(1, item.quantity) : 1;
+                const itemId = item.id || Date.now().toString();
+                const sizeText = item.size ? `Size: ${item.size}` : '';
+                
+                itemElement.innerHTML = `
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="${imageUrl}" alt="${itemName}" class="product-image img-fluid">
+                        </div>
+                        <div class="col-md-4">
+                            <h5 class="mb-1">${itemName}</h5>
+                            ${sizeText ? `<p class="text-muted mb-1">${sizeText}</p>` : ''}
+                            <p class="mb-0">$${itemPrice.toFixed(2)}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="quantity-btn" onclick="updateQuantity('${itemId}', ${itemQuantity - 1})">-</button>
+                                <input type="number" class="quantity-input" value="${itemQuantity}" min="1" 
+                                    onchange="updateQuantity('${itemId}', this.value)">
+                                <button type="button" class="quantity-btn" onclick="updateQuantity('${itemId}', ${itemQuantity + 1})">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <h5 class="mb-0">$${(itemPrice * itemQuantity).toFixed(2)}</h5>
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <button type="button" class="btn btn-link text-danger p-0" onclick="removeFromCart('${itemId}')">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                cartItemsContainer.appendChild(itemElement);
+                animateCartItem(itemElement);
+            });
+            
+            updateSummary(calculateSubtotal());
+            updateCartCount();
+        } catch (error) {
+            console.error('Error rendering cart:', error);
+            if (emptyCartMessage) {
+                emptyCartMessage.classList.remove('d-none');
+                emptyCartMessage.textContent = 'Error loading cart items. Please refresh the page.';
+            }
+        }
+    }
+    
+    // Handle checkout
+    checkoutBtn.addEventListener('click', function() {
+        if (!cartItems || cartItems.length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+        
+        // In a real application, you would redirect to a checkout page
+        alert('Proceeding to checkout...');
+    });
+    
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCart();
+        createSnowflakes();
+    });
+    </script>
+</body>
+</html>

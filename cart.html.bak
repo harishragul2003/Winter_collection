@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Winter Collection</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --light-bg: #f8f9ff;
+            --gradient: linear-gradient(135deg, #4361ee 0%, #3f37c9 50%, #4cc9f0 100%);
+            --card-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            padding-top: 80px;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0.1;
+            z-index: -2;
+            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .cart-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
+        }
+
+        .cart-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem 0;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1.5rem;
+        }
+
+        .cart-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            transition: all 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 35px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin: 0 10px;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+        }
+
+        .quantity-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            position: sticky;
+            top: 100px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-checkout {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-checkout::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3f37c9 0%, #4361ee 50%, #4cc9f0 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-checkout:hover::before {
+            opacity: 1;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px dashed rgba(67, 97, 238, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .empty-cart:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+        }
+
+        .empty-cart i {
+            font-size: 5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        /* Winter theme elements */
+        .snowflake {
+            position: fixed;
+            color: #4cc9f0;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: -1;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cart-container {
+                padding: 1.5rem;
+            }
+            
+            .product-image {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .summary-card {
+                position: static;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Winter-themed Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">Winter Collection</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="new-arrivals.html">New Arrivals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="collections.html">Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sale.html">Sale</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+                <div class="nav-icons">
+                    <a href="#" class="nav-icon" title="Search">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <a href="login.html" class="nav-icon" title="Account">
+                        <i class="far fa-user"></i>
+                    </a>
+                    <a href="cart.html" class="nav-icon cart position-relative" title="Cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Content -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-container">
+                    <h2 class="mb-4 d-flex align-items-center">
+                        <i class="fas fa-snowflake me-2" style="color: #4cc9f0;"></i>
+                        Your Shopping Cart
+                        <span class="badge bg-primary rounded-pill ms-2" id="cartCount">0</span>
+                    </h2>
+                    
+                    <!-- Cart Items -->
+                    <div id="cartItems">
+                        <!-- Cart items will be dynamically added here -->
+                    </div>
+                    
+                    <!-- Empty Cart Message -->
+                    <div id="emptyCart" class="empty-cart d-none">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p class="text-muted">Looks like you haven't added anything to your cart yet.</p>
+                        <a href="collections.html" class="btn btn-primary mt-3">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="summary-card">
+                    <h4 class="mb-4">Order Summary</h4>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span id="subtotal">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span id="shipping">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax</span>
+                        <span id="tax">$0.00</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5>Total</h5>
+                        <h5 id="total">$0.00</h5>
+                    </div>
+                    <button class="btn-checkout" id="checkoutBtn">Proceed to Checkout</button>
+                    <p class="text-center text-muted mt-3 small">Or <a href="collections.html" class="text-primary">continue shopping</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Winter-themed Footer -->
+    <footer class="py-5 mt-5" style="background: linear-gradient(135deg, #2b2d42 0%, #1a1a2e 100%); color: white;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>Winter Collection</h5>
+                    <p class="text-muted">Your one-stop shop for the latest winter fashion trends.</p>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h6>Shop</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">New Arrivals</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Collections</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Sale</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h6>Help</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">Shipping Info</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Returns & Exchanges</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Newsletter</h6>
+                    <p class="text-muted">Subscribe for updates and special offers.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Your email" aria-label="Your email" aria-describedby="button-subscribe">
+                        <button class="btn btn-outline-light" type="button" id="button-subscribe">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center text-muted">
+                <p class="mb-0">&copy; 2023 Winter Collection. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/cart.js"></script>
+    
+    <script>
+        // Create snowflakes
+        function createSnowflakes() {
+            const snowflakes = ["❄", "❅", "❆", "•", "✻", "✼"];
+            const container = document.body;
+            
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const snowflake = document.createElement('div');
+                    snowflake.className = 'snowflake';
+                    snowflake.innerHTML = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+                    snowflake.style.left = Math.random() * 100 + 'vw';
+                    snowflake.style.top = '-20px';
+                    snowflake.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                    snowflake.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                    snowflake.style.animationDelay = (Math.random() * 5) + 's';
+                    container.appendChild(snowflake);
+                }, i * 300);
+            }
+        }
+        
+        // Initialize snowflakes when page loads
+        window.addEventListener('load', createSnowflakes);
+
+        // Add animation to cart items when they're added
+        function animateCartItem(item) {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 100);
+        }
+
+        // Add hover effect to cart items
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItems = document.querySelectorAll('.cart-item');
+            cartItems.forEach(item => {
+                animateCartItem(item);
+            });
+        });
+    </script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear any existing cart data and start fresh
+            localStorage.removeItem('winterCollectionCart');
+            let cartItems = [];
+            const cartItemsContainer = document.getElementById('cartItems');
+            const emptyCartMessage = document.getElementById('emptyCart');
+            const subtotalElement = document.getElementById('subtotal');
+            const shippingElement = document.getElementById('shipping');
+            const taxElement = document.getElementById('tax');
+            const totalElement = document.getElementById('total');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+
+
+            // Render cart items
+            function renderCart() {
+                cartItemsContainer.innerHTML = '';
+                
+                if (cartItems.length === 0) {
+                    emptyCartMessage.classList.remove('d-none');
+                    updateSummary(0);
+                    return;
+                }
+                
+                emptyCartMessage.classList.add('d-none');
+                
+                cartItems.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'cart-item';
+                    itemElement.innerHTML = `
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="${item.image}" alt="${item.name}" class="product-image">
+                            </div>
+                            <div class="col-md-5">
+                                <h5>${item.name}</h5>
+                                <p class="text-muted">Size: ${item.size}</p>
+                                <button class="btn btn-link text-danger p-0" onclick="removeFromCart(${item.id})">
+                                    <small>Remove</small>
+                                </button>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <div class="d-flex align-items-center justify-content-md-end mb-2">
+                                    <div class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</div>
+                                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateQuantity(${item.id}, this.value)">
+                                    <div class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</div>
+                                </div>
+                                <h5 class="mt-2">$${(item.price * item.quantity).toFixed(2)}</h5>
+                            </div>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
+                
+                updateSummary(calculateSubtotal());
+            }
+
+            // Calculate subtotal
+            function calculateSubtotal() {
+                return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+            }
+
+            // Update order summary
+            function updateSummary(subtotal) {
+                const shipping = subtotal > 0 ? 9.99 : 0;
+                const tax = subtotal * 0.08; // 8% tax
+                const total = subtotal + shipping + tax;
+                
+                subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+                shippingElement.textContent = shipping > 0 ? `$${shipping.toFixed(2)}` : 'Free';
+                taxElement.textContent = `$${tax.toFixed(2)}`;
+                totalElement.textContent = `$${total.toFixed(2)}`;
+            }
+
+            // Remove item from cart
+            window.removeFromCart = function(id) {
+                cartItems = cartItems.filter(item => item.id !== id);
+                // Update localStorage
+                localStorage.setItem('winterCollectionCart', JSON.stringify(cartItems));
+                // Update cart count in navigation
+                if (window.updateCartCount) {
+                    window.updateCartCount();
+                }
+                renderCart();
+            };
+
+            // Update item quantity
+            window.updateQuantity = function(id, newQuantity) {
+                newQuantity = parseInt(newQuantity);
+                if (newQuantity < 1) newQuantity = 1;
+                
+                const item = cartItems.find(item => item.id === id);
+                if (item) {
+                    item.quantity = newQuantity;
+                    // Update localStorage
+                    localStorage.setItem('winterCollectionCart', JSON.stringify(cartItems));
+                    // Update cart count in navigation
+                    if (window.updateCartCount) {
+                        window.updateCartCount();
+                    }
+                    renderCart();
+                }
+            };
+
+            // Handle checkout
+            checkoutBtn.addEventListener('click', function() {
+                if (cartItems.length === 0) {
+                    alert('Your cart is empty. Please add items before checking out.');
+                    return;
+                }
+                // In a real app, this would redirect to a checkout page
+                alert('Proceeding to checkout!');
+            });
+
+            // Initial render
+            renderCart();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sale - Winter Collection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .sale-banner {
+            background: linear-gradient(135deg, #ff4d4d 0%, #ff1a1a 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sale-banner::before {
+            content: 'SALE';
+            position: absolute;
+            top: 20px;
+            right: -50px;
+            font-size: 120px;
+            font-weight: 900;
+            opacity: 0.1;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+        
+        .sale-badge {
+            background: white;
+            color: #ff1a1a;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .sale-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+            position: relative;
+        }
+        
+        .sale-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .sale-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .sale-image {
+            position: relative;
+            overflow: hidden;
+            padding-top: 100%;
+        }
+        
+        .sale-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff1a1a;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .sale-details {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .sale-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff1a1a;
+            display: block;
+        }
+        
+        .savings-badge {
+            display: inline-block;
+            background: #fff2cc;
+            color: #e6a700;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .sale-timer {
+            background: #fff8e1;
+            color: #e6a700;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff1a1a;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 2;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .limited-offer .btn-warning {
+            background: #ffc107;
+            border-color: #ffc107;
+            min-width: 150px;
+        }
+        
+        .limited-offer .btn-warning:hover {
+            background: #e0a800;
+            border-color: #d39e00;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-sale {
+            background: #ff1a1a;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 26, 26, 0.3);
+        }
+        
+        .btn-sale:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 26, 26, 0.4);
+        }
+        
+        .btn-sale:active {
+            transform: translateY(0);
+        }
+        
+        .btn-sale::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%, -50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .btn-sale:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+        
+        .btn-sale:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="./img/img/logo.png" alt="Winter Collection Logo" class="me-2" style="height: 40px; width: auto;">
+                <span class="logo d-none d-sm-inline">Winter Collection</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="new-arrivals.html">New Arrivals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="collections.html">Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="sale.html">Sale</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+
+                <div class="nav-icons d-flex align-items-center">
+                    <div class="search-container">
+                        <div class="search-box" id="searchBox">
+                            <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
+                            <button type="button" class="search-button" id="searchButton">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <div id="searchResults" class="search-results"></div>
+                        </div>
+                    </div>
+                    <a href="login.html" class="nav-icon" title="Account">
+                        <i class="far fa-user"></i>
+                    </a>
+                    <a href="cart.html" class="nav-icon cart" title="Cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="badge">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sale Banner -->
+    <div class="sale-banner">
+        <div class="container">
+            <span class="sale-badge">HOT DEALS</span>
+            <h1 class="display-4 fw-bold mb-3">End of Season Clearance</h1>
+            <p class="lead mb-4">Massive discounts up to 80% off. Limited stock available!</p>
+            <div class="countdown d-flex justify-content-center gap-3">
+                <div class="text-center">
+                    <div class="fs-1 fw-bold" id="days">00</div>
+                    <div>Days</div>
+                </div>
+                <div class="text-center">
+                    <div class="fs-1 fw-bold" id="hours">00</div>
+                    <div>Hours</div>
+                </div>
+                <div class="text-center">
+                    <div class="fs-1 fw-bold" id="minutes">00</div>
+                    <div>Minutes</div>
+                </div>
+                <div class="text-center">
+                    <div class="fs-1 fw-bold" id="seconds">00</div>
+                    <div>Seconds</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sale Items -->
+    <section class="sale-items py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>Flash Sale</h2>
+                <p class="text-muted">Limited time offers - Prices slashed for a short time only</p>
+                <div class="sale-timer bg-light p-3 rounded d-inline-block mb-4">
+                    <span class="fw-bold me-2">Sale Ends In:</span>
+                    <span id="sale-hours">23</span>h <span id="sale-minutes">59</span>m <span id="sale-seconds">59</span>s
+                </div>
+            </div>
+            <div class="row g-4">
+                <!-- Sale Item 1 -->
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="sale-item">
+                        <div class="sale-image">
+                            <img src="./img/img/img1.jpeg" alt="Winter Coat" class="img-fluid">
+                            <span class="discount-badge">50% OFF</span>
+                        </div>
+                        <div class="sale-details">
+                            <h3>Winter Parka</h3>
+                            <p class="text-muted">Heavy-duty protection from the cold</p>
+                            <div class="price">
+                                <span class="sale-price">$79.99</span>
+                                <span class="original-price">$199.99</span>
+                                <div class="savings-badge mt-2">You save $120</div>
+                            </div>
+                            <button class="btn btn-sale">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sale Item 2 -->
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="sale-item">
+                        <div class="sale-image">
+                            <img src="./img/img/img2.jpeg" alt="Knit Sweater" class="img-fluid">
+                            <span class="discount-badge">40% OFF</span>
+                        </div>
+                        <div class="sale-details">
+                            <h3>Cashmere Sweater</h3>
+                            <p class="text-muted">Luxuriously soft and warm</p>
+                            <div class="price">
+                                <span class="sale-price">$89.99</span>
+                                <span class="original-price">$249.99</span>
+                                <div class="savings-badge mt-2">64% OFF</div>
+                            </div>
+                            <button class="btn btn-sale">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sale Item 3 -->
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="sale-item">
+                        <div class="sale-image">
+                            <img src="./img/img/img3.jpeg" alt="Winter Boots" class="img-fluid">
+                            <span class="discount-badge">60% OFF</span>
+                        </div>
+                        <div class="sale-details">
+                            <h3>Waterproof Snow Boots</h3>
+                            <p class="text-muted">-30°C rated protection</p>
+                            <div class="price">
+                                <span class="sale-price">$59.99</span>
+                                <span class="original-price">$149.99</span>
+                                <div class="savings-badge mt-2">60% OFF</div>
+                            </div>
+                            <button class="btn btn-sale">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sale Item 4 -->
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="sale-item">
+                        <div class="sale-image">
+                            <img src="./img/img/img4.jpeg" alt="Wool Scarf" class="img-fluid">
+                            <span class="discount-badge">30% OFF</span>
+                        </div>
+                        <div class="sale-details">
+                            <h3>Premium Wool Scarf Set</h3>
+                            <p class="text-muted">Hat & Gloves included</p>
+                            <div class="price">
+                                <span class="sale-price">$29.99</span>
+                                <span class="original-price">$89.97</span>
+                                <div class="savings-badge mt-2">Best Value</div>
+                            </div>
+                            <button class="btn btn-sale">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Limited Time Offer -->
+            <div class="limited-offer p-4 mt-5 text-center" style="background: #fff8e1; border-radius: 10px; border: 2px dashed #ffc107;">
+                <h3 class="text-warning">🔥 Limited Time Offer! 🔥</h3>
+                <p class="lead">Spend $100+ and get an extra 20% off at checkout</p>
+                <p>Use code: <strong>WINTER20</strong></p>
+                <div class="countdown-timer mt-3">
+                    <small class="d-block mb-2">Offer ends in:</small>
+                    <div class="d-flex justify-content-center gap-3">
+                        <div class="text-center">
+                            <div class="fs-4 fw-bold" id="offer-hours">23</div>
+                            <div class="small">HOURS</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="fs-4 fw-bold" id="offer-minutes">59</div>
+                            <div class="small">MINUTES</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Deals Section -->
+            <div class="text-center mt-5 pt-4">
+                <h3 class="mb-3">Want More Deals?</h3>
+                <p class="lead mb-4">Subscribe now to unlock exclusive member-only discounts!</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
+                        <div class="input-group">
+                            <input type="email" class="form-control form-control-lg" placeholder="Enter your email" required>
+                            <button class="btn btn-warning text-white fw-bold" type="submit">GET 15% OFF</button>
+                        </div>
+                        <p class="small text-muted mt-2">By subscribing, you agree to our Terms & Conditions. Unsubscribe anytime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <p class="mb-0 small">&copy; 2025 Winter Collection. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="social-links d-inline-block">
+                        <a href="#" class="text-white me-2" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white" title="Pinterest"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/search.js"></script>
+    <script>
+        // Initialize countdown timer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set end of day (11:59:59 PM)
+            const now = new Date();
+            const endOfDay = new Date();
+            endOfDay.setHours(23, 59, 59, 0);
+            
+            // Initialize cart count from localStorage or 0
+            const cartCount = localStorage.getItem('cartCount') || 0;
+            const cartBadge = document.querySelector('.cart .badge');
+            if (cartBadge) {
+                cartBadge.textContent = cartCount;
+            }
+            
+            // Update countdown function
+            function updateCountdown() {
+                const now = new Date();
+                let diff = endOfDay - now;
+                
+                // If it's past midnight, set to next day
+                if (diff < 0) {
+                    endOfDay.setDate(endOfDay.getDate() + 1);
+                    diff = endOfDay - now;
+                }
+                
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                // Update main timer
+                const saleHours = document.getElementById('sale-hours');
+                const saleMinutes = document.getElementById('sale-minutes');
+                const saleSeconds = document.getElementById('sale-seconds');
+                
+                if (saleHours) saleHours.textContent = String(hours).padStart(2, '0');
+                if (saleMinutes) saleMinutes.textContent = String(minutes).padStart(2, '0');
+                if (saleSeconds) saleSeconds.textContent = String(seconds).padStart(2, '0');
+                
+                // Update offer timer (4 hours from now)
+                const offerEnd = new Date(now.getTime() + (4 * 60 * 60 * 1000)); // 4 hours from now
+                const offerDiff = offerEnd - now;
+                
+                const offerSection = document.querySelector('.limited-offer');
+                
+                if (offerDiff > 0) {
+                    const offerHours = Math.floor((offerDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const offerMinutes = Math.floor((offerDiff % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    const offerHoursEl = document.getElementById('offer-hours');
+                    const offerMinutesEl = document.getElementById('offer-minutes');
+                    
+                    if (offerHoursEl) offerHoursEl.textContent = String(offerHours).padStart(2, '0');
+                    if (offerMinutesEl) offerMinutesEl.textContent = String(offerMinutes).padStart(2, '0');
+                } else if (offerSection) {
+                    offerSection.style.display = 'none';
+                }
+            }
+            
+            // Update countdown every second
+            setInterval(updateCountdown, 1000);
+            updateCountdown(); // Initial call
+        
+            // Add to cart functionality with animation
+            document.querySelectorAll('.btn-sale').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const itemCard = this.closest('.sale-item');;
+                    const itemName = itemCard.querySelector('h3').textContent;
+                    const itemPrice = itemCard.querySelector('.sale-price').textContent;
+                    const itemImage = itemCard.querySelector('img') ? itemCard.querySelector('img').src : '';
+                    
+                    // Add to cart animation
+                    const cartIcon = document.querySelector('.cart i') || document.querySelector('.cart');
+                    if (cartIcon) {
+                        const rect = this.getBoundingClientRect();
+                        const cartRect = cartIcon.getBoundingClientRect();
+                        
+                        // Create flying item
+                        const flyingItem = document.createElement('div');
+                        flyingItem.className = 'flying-item';
+                        flyingItem.style.cssText = `
+                            position: fixed;
+                            left: ${rect.left + rect.width/2}px;
+                            top: ${rect.top}px;
+                            width: 20px;
+                            height: 20px;
+                            background: #ff1a1a;
+                            border-radius: 50%;
+                            pointer-events: none;
+                            z-index: 1000;
+                            transition: all 0.8s cubic-bezier(0.42, 0, 0.58, 1);
+                            background-image: url('${itemImage}');
+                            background-size: cover;
+                            background-position: center;
+                            border: 2px solid white;
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                        `;
+                        document.body.appendChild(flyingItem);
+                        
+                        // Animate to cart
+                        setTimeout(() => {
+                            flyingItem.style.left = `${cartRect.left + cartRect.width/2}px`;
+                            flyingItem.style.top = `${cartRect.top + cartRect.height/2}px`;
+                            flyingItem.style.transform = 'scale(0.5)';
+                            flyingItem.style.opacity = '0.8';
+                        }, 10);
+                        
+                        // Remove animation element and update cart
+                        setTimeout(() => {
+                            document.body.removeChild(flyingItem);
+                            
+                            // Update cart count
+                            const cartBadge = document.querySelector('.cart .badge');
+                            if (cartBadge) {
+                                const currentCount = parseInt(cartBadge.textContent) || 0;
+                                const newCount = currentCount + 1;
+                                cartBadge.textContent = newCount;
+                                localStorage.setItem('cartCount', newCount);
+                                
+                                // Add bounce animation
+                                cartBadge.classList.add('animate-bounce');
+                                setTimeout(() => cartBadge.classList.remove('animate-bounce'), 1000);
+                            }
+                            
+                            // Show added to cart message
+                            showToast(`Added ${itemName} to cart!`, 'success');
+                            
+                            // Add to cart in localStorage
+                            addToCart({
+                                id: itemCard.dataset.productId || Date.now(),
+                                name: itemName,
+                                price: parseFloat(itemPrice.replace(/[^0-9.-]+/g,"")),
+                                image: itemImage,
+                                quantity: 1
+                            });
+                            
+                        }, 800);
+                    }
+                });
+            });
+            
+            // Add animation for discount badges
+            document.querySelectorAll('.discount-badge').forEach(badge => {
+                // Add pulse animation
+                setInterval(() => {
+                    badge.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        badge.style.transform = 'scale(1)';
+                    }, 500);
+                }, 2000);
+            });
+            
+            // Toast notification function
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast-message toast-${type}`;
+                toast.textContent = message;
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(100px);
+                    background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 4px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 9999;
+                    transition: transform 0.3s ease-out, opacity 0.3s ease;
+                    opacity: 0;
+                    font-size: 14px;
+                    font-weight: 500;
+                `;
+                document.body.appendChild(toast);
+                
+                // Animate in
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(-50%) translateY(0)';
+                    toast.style.opacity = '1';
+                }, 10);
+                
+                // Remove after delay
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(-20px)';
+                    setTimeout(() => document.body.removeChild(toast), 300);
+                }, 3000);
+            }
+            
+            // Cart management functions
+            function addToCart(item) {
+                let cart = JSON.parse(localStorage.getItem('winterCollectionCart') || '[]');
+                const existingItem = cart.find(i => i.id === item.id);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push(item);
+                }
+                
+                localStorage.setItem('winterCollectionCart', JSON.stringify(cart));
+            }
+        });
+    </script>
+</body>
+</html>

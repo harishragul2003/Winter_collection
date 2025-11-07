@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Collection | Explore Our Premium Winter Wear</title>
+    <meta name="description" content="Discover our premium winter collection featuring coats, knitwear, and accessories designed for style and warmth.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f9f9f9;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --transition: all 0.3s ease;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.8)), 
+                        url('./img/img/hero-bg.jpg') center/cover no-repeat;
+            padding: 100px 0;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 60px;
+        }
+        
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: fadeInDown 1s ease;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+        
+        /* Collection Cards */
+        .collection-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            transition: var(--transition);
+            background: #fff;
+            border: 1px solid #eee;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+        
+        .collection-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .collection-image img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .collection-card:hover .collection-image img {
+            transform: scale(1.1);
+        }
+        
+        .collection-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.1));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 25px;
+            color: white;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .collection-card:hover .collection-overlay {
+            opacity: 1;
+        }
+        
+        .collection-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+        
+        .collection-badge.sale {
+            background: #2ecc71;
+        }
+        
+        .collection-badge.new {
+            background: #3498db;
+        }
+        
+        .collection-card:hover .collection-badge {
+            transform: translateY(5px);
+        }
+        
+        /* Section Styling */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto 50px;
+            font-weight: 800;
+            color: var(--text-dark);
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 60px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        /* Buttons */
+        .btn-custom {
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: none;
+        }
+        
+        /* Pagination Styles */
+        .pagination .page-link {
+            color: var(--primary-color);
+            border: 1px solid #dee2e6;
+            margin: 0 3px;
+            border-radius: 4px;
+            min-width: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            border-color: #dee2e6;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+        
+        /* Fade-in animation for page transitions */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn-custom:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            transition: var(--transition);
+            z-index: -1;
+        }
+        
+        .btn-custom:hover:before {
+            width: 100%;
+        }
+        
+        .btn-primary-custom {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-outline-custom:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-section p {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="./img/img/logo.png" alt="Winter Collection Logo" class="me-2" style="height: 40px; width: auto;">
+                <span class="logo d-none d-sm-inline">Winter Collection</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="new-arrivals.html">New Arrivals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="collections.html">Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sale.html">Sale</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+
+                <div class="nav-icons d-flex align-items-center">
+                    <div class="search-container">
+                        <div class="search-box" id="searchBox">
+                            <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
+                            <button type="button" class="search-button" id="searchButton">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <div id="searchResults" class="search-results"></div>
+                        </div>
+                    </div>
+                    <a href="login.html" class="nav-icon" title="Account">
+                        <i class="far fa-user"></i>
+                    </a>
+                    <a href="cart.html" class="nav-icon cart" title="Cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="badge">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h1 class="display-4 fw-bold mb-4">Winter Collection 2025</h1>
+                    <p class="lead mb-5">Step into the season with our exclusive range of premium winter essentials. Meticulously crafted for style, comfort, and warmth that lasts.</p>
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="#featured-collections" class="btn btn-custom btn-primary-custom">Shop Now</a>
+                        <a href="#premium-collection" class="btn btn-custom btn-outline-custom">View Premium</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Collections -->
+    <section id="featured-collections" class="py-5 bg-light">
+        <div class="container py-5">
+            <h2 class="section-title">Featured Collections</h2>
+            <p class="section-subtitle">Discover our curated selection of winter essentials, designed to keep you warm and stylish throughout the season.</p>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="collection-card h-100">
+                        <span class="collection-badge new">New Arrival</span>
+                        <div class="collection-image">
+                            <img src="./img/img/img1.jpeg" alt="Luxury Outerwear">
+                            <div class="collection-overlay">
+                                <h3 class="h4 mb-2">Luxury Outerwear</h3>
+                                <p class="mb-3">Premium coats and jackets for ultimate warmth</p>
+                                <a href="#" class="btn btn-outline-light btn-sm">Explore Collection →</a>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="h5 mb-1">Luxury Outerwear</h4>
+                                    <p class="text-muted mb-0">From <span class="text-dark fw-bold">$199.99</span></p>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary">+</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="collection-card h-100">
+                        <span class="collection-badge">Best Seller</span>
+                        <div class="collection-image">
+                            <img src="./img/img/img2.jpeg" alt="Cashmere Knitwear">
+                            <div class="collection-overlay">
+                                <h3 class="h4 mb-2">Cashmere Knitwear</h3>
+                                <p class="mb-3">Luxuriously soft sweaters and cardigans</p>
+                                <a href="#" class="btn btn-outline-light btn-sm">Explore Collection →</a>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="h5 mb-1">Cashmere Knitwear</h4>
+                                    <p class="text-muted mb-0">From <span class="text-dark fw-bold">$149.99</span></p>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary">+</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="collection-card h-100">
+                        <span class="collection-badge">Trending</span>
+                        <div class="collection-image">
+                            <img src="./img/img/img3.jpeg" alt="Winter Accessories">
+                            <div class="collection-overlay">
+                                <h3 class="h4 mb-2">Winter Accessories</h3>
+                                <p class="mb-3">Complete your winter look with our accessories</p>
+                                <a href="#" class="btn btn-outline-light btn-sm">Explore Collection →</a>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="h5 mb-1">Winter Accessories</h4>
+                                    <p class="text-muted mb-0">From <span class="text-dark fw-bold">$29.99</span></p>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary">+</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <nav aria-label="Collections pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true" data-page="prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#" data-page="1">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#" data-page="2">2</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="next">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Winter Footwear -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-6">
+                    <h2 class="section-title text-start">Step in Style</h2>
+                    <p class="lead">Our winter footwear collection combines fashion and function to keep your feet warm and dry in any weather condition.</p>
+                    <div class="d-flex gap-2 mb-4">
+                        <span class="badge bg-light text-dark me-2">Waterproof</span>
+                        <span class="badge bg-light text-dark me-2">Insulated</span>
+                        <span class="badge bg-light text-dark">Slip-resistant</span>
+                    </div>
+                    <a href="#" class="btn btn-dark px-4">Shop All Footwear</a>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <div class="collection-card h-100">
+                                <span class="collection-badge">Waterproof</span>
+                                <div class="collection-image">
+                                    <img src="./img/img/img4.jpeg" alt="Winter Boots">
+                                    <div class="collection-overlay">
+                                        <h4 class="h6 mb-2">Winter Boots</h4>
+                                        <a href="#" class="btn btn-light btn-sm">Shop Now →</a>
+                                    </div>
+                                </div>
+                                <div class="p-3 text-center">
+                                    <h5 class="h6 mb-1">Winter Boots</h5>
+                                    <p class="text-muted small mb-0">From $129.99</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="collection-card h-100">
+                                <span class="collection-badge new">New Styles</span>
+                                <div class="collection-image">
+                                    <img src="./img/img/img5.jpeg" alt="Casual Sneakers">
+                                    <div class="collection-overlay">
+                                        <h4 class="h6 mb-2">Casual Sneakers</h4>
+                                        <a href="#" class="btn btn-light btn-sm">Shop Now →</a>
+                                    </div>
+                                </div>
+                                <div class="p-3 text-center">
+                                    <h5 class="h6 mb-1">Casual Sneakers</h5>
+                                    <p class="text-muted small mb-0">From $89.99</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Collection -->
+    <section id="premium-collection" class="py-4 bg-dark text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-4 mb-lg-0">
+                    <div class="position-relative">
+                        <div class="rounded-3 overflow-hidden">
+                            <img src="./img/img/img6.jpeg" alt="Premium Collection" class="img-fluid">
+                        </div>
+                        <span class="position-absolute top-0 start-0 m-3 bg-white text-dark px-2 py-1 rounded-pill small fw-bold">Winter 2025</span>
+                    </div>
+                </div>
+                <div class="col-lg-6 offset-lg-1">
+                    <h2 class="h3 fw-bold mb-3">Premium Collection</h2>
+                    <p class="mb-4">Experience premium winter fashion with our exclusive collection, crafted from the finest materials for comfort and style.</p>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check text-primary me-2"></i>
+                                <span class="small">Premium Materials</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-leaf text-primary me-2"></i>
+                                <span class="small">Eco-Friendly</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-truck text-primary me-2"></i>
+                                <span class="small">Free Shipping</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-undo text-primary me-2"></i>
+                                <span class="small">Easy Returns</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="#" class="btn btn-primary px-3 py-2">Shop Now</a>
+                        <a href="#" class="btn btn-outline-light px-3 py-2">Learn More</a>
+                    </div>
+                    
+                    <div class="d-flex align-items-center mt-3 small text-muted">
+                        <div class="text-warning me-2">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span>4.8 (2.4k reviews)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-5 position-relative bg-light overflow-hidden">
+        <div class="container position-relative py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7 text-center">
+                    <div class="position-relative">
+                        <span class="badge bg-primary bg-opacity-10 text-primary mb-3">Join Our Community</span>
+                        <h2 class="display-5 fw-bold mb-3">Get 10% Off Your First Order</h2>
+                        <p class="lead text-muted mb-4">Subscribe to our newsletter and be the first to know about exclusive offers, new arrivals, and style inspiration.</p>
+                        
+                        <form class="row g-2 justify-content-center">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="far fa-envelope text-muted"></i></span>
+                                    <input type="email" class="form-control form-control-lg border-start-0 ps-2" placeholder="Your email address">
+                                </div>
+                            </div>
+                            <div class="col-md-auto">
+                                <button type="submit" class="btn btn-dark btn-lg w-100">Subscribe</button>
+                            </div>
+                        </form>
+                        
+                        <p class="small text-muted mt-3 mb-0">By subscribing, you agree to our <a href="#" class="text-decoration-underline text-dark">Privacy Policy</a> and consent to receive updates from our company.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="position-absolute bottom-0 end-0 me-n5 mb-n5" style="z-index: 0;">
+            <div class="bg-primary bg-opacity-10 rounded-circle" style="width: 300px; height: 300px;"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3">
+        <div class="container">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small mb-2 mb-md-0">&copy; 2025 Winter Collection. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-inline-flex align-items-center">
+                        <span class="small text-muted me-2 d-none d-sm-inline">Payments:</span>
+                        <i class="fab fa-cc-visa me-2 small" title="Visa"></i>
+                        <i class="fab fa-cc-mastercard me-2 small" title="Mastercard"></i>
+                        <i class="fab fa-cc-paypal small" title="PayPal"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-12 text-center">
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="text-white small text-decoration-none">Privacy</a>
+                        <span class="text-muted">|</span>
+                        <a href="#" class="text-white small text-decoration-none">Terms</a>
+                        <span class="text-muted">|</span>
+                        <a href="#" class="text-white small text-decoration-none">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/pagination.js"></script>
+</body>
+</html>

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Winter Collection</title>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Cart JS -->
+    <script src="js/cart.js"></script>
+    
+    <script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize cart manager
+        const cartManager = window.cartManager || new CartManager();
+        
+        // DOM Elements
+        const cartItemsContainer = document.getElementById('cartItems');
+        const emptyCartMessage = document.getElementById('emptyCart');
+        const subtotalElement = document.getElementById('subtotal');
+        const shippingElement = document.getElementById('shipping');
+        const taxElement = document.getElementById('tax');
+        const totalElement = document.getElementById('total');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const cartCountElement = document.getElementById('cartCount');
+        
+        // Cart items array
+        let cartItems = [];
+        
+        // Update cart count in the UI
+        function updateCartCount() {
+            const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
+            if (cartCountElement) {
+                cartCountElement.textContent = totalItems;
+                cartCountElement.style.display = totalItems > 0 ? 'inline-block' : 'none';
+            }
+        }
+        
+        // Calculate subtotal
+        function calculateSubtotal() {
+            return cartItems.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
+        }
+        
+        // Update order summary
+        function updateSummary() {
+            const subtotal = calculateSubtotal();
+            const shipping = subtotal > 50 ? 0 : 9.99; // Free shipping for orders over $50
+            const tax = subtotal * 0.08; // 8% tax
+            const total = subtotal + shipping + tax;
+            
+            // Format currency
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(amount);
+            };
+                    
+            if (subtotalElement) subtotalElement.textContent = formatCurrency(subtotal);
+            if (shippingElement) {
+                shippingElement.textContent = shipping > 0 ? formatCurrency(shipping) : 'Free';
+                shippingElement.className = shipping > 0 ? '' : 'text-success';
+            }
+            if (taxElement) taxElement.textContent = formatCurrency(tax);
+            if (totalElement) totalElement.textContent = formatCurrency(total);
+            
+            // Update item count in the summary
+            if (itemCountElement) {
+                const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+                itemCountElement.textContent = totalItems;
+            }
+        }
+        
+        // Add animation to cart items when they're added
+        function animateCartItem(item) {
+            if (!item) return;
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 100);
+        }
+        
+        // Create snowflakes animation
+        function createSnowflakes() {
+            const snowflakes = ["❄", "❅", "❆", "•", "✻", "✼"];
+            const container = document.body;
+            
+            function createSnowflake() {
+                const snowflake = document.createElement('div');
+                snowflake.textContent = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+                snowflake.style.position = 'fixed';
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.top = '-20px';
+                snowflake.style.fontSize = Math.random() * 20 + 10 + 'px';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+                snowflake.style.animation = `fall ${Math.random() * 10 + 5}s linear infinite`;
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.pointerEvents = 'none';
+                snowflake.style.userSelect = 'none';
+                snowflake.style.zIndex = '1000';
+                container.appendChild(snowflake);
+                
+                // Remove snowflake after animation completes
+                setTimeout(() => {
+                    snowflake.remove();
+                }, 15000);
+            }
+            
+            // Create initial snowflakes
+            for (let i = 0; i < 30; i++) {
+                setTimeout(createSnowflake, Math.random() * 5000);
+            }
+            
+            // Continue creating snowflakes
+            setInterval(createSnowflake, 1000);
+        }
+        
+        // Remove item from cart
+        window.removeFromCart = function(id) {
+            cartManager.removeFromCart(id);
+            cartItems = cartManager.getCartItems();
+            renderCart();
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
+            notification.role = 'alert';
+            notification.textContent = 'Item removed from cart';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        };
+        
+        // Update item quantity
+        window.updateQuantity = function(id, newQuantity) {
+            newQuantity = parseInt(newQuantity);
+            if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
+            
+            cartManager.updateQuantity(id, newQuantity);
+            cartItems = cartManager.getCartItems();
+            renderCart();
+        };
+        
+        // Render cart items
+        function renderCart() {
+            try {
+                // Refresh cart items from manager
+                cartItems = cartManager.getCartItems();
+                
+                if (!cartItemsContainer) {
+                    console.error('Cart items container not found');
+                    return;
+                }
+                
+                cartItemsContainer.innerHTML = '';
+                
+                if (!cartItems || cartItems.length === 0) {
+                    if (emptyCartMessage) {
+                        emptyCartMessage.classList.remove('d-none');
+                    }
+                    updateSummary();
+                    updateCartCount();
+                    return;
+                }
+                
+                if (emptyCartMessage) emptyCartMessage.classList.add('d-none');
+                
+                cartItems.forEach(item => {
+                    if (!item || typeof item !== 'object') return;
+                    
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'cart-item mb-4 pb-4 border-bottom';
+                    
+                    const imageUrl = item.image || 'https://via.placeholder.com/100';
+                    const itemName = item.name || 'Unnamed Item';
+                    const itemPrice = typeof item.price === 'number' ? item.price : 0;
+                    const itemQuantity = typeof item.quantity === 'number' ? Math.max(1, item.quantity) : 1;
+                    const itemId = item.id || Date.now().toString();
+                    const sizeText = item.size ? `Size: ${item.size}` : '';
+                    
+                    itemElement.innerHTML = `
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="${imageUrl}" alt="${itemName}" class="product-image img-fluid">
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="mb-1">${itemName}</h5>
+                                ${sizeText ? `<p class="text-muted mb-1">${sizeText}</p>` : ''}
+                                <p class="mb-0">$${itemPrice.toFixed(2)}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="d-flex align-items-center">
+                                    <button type="button" class="quantity-btn" onclick="updateQuantity('${itemId}', ${itemQuantity - 1})">-</button>
+                                    <input type="number" class="quantity-input" value="${itemQuantity}" min="1" 
+                                        onchange="updateQuantity('${itemId}', this.value)">
+                                    <button type="button" class="quantity-btn" onclick="updateQuantity('${itemId}', ${itemQuantity + 1})">+</button>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <h5 class="mb-0">$${(itemPrice * itemQuantity).toFixed(2)}</h5>
+                            </div>
+                            <div class="col-md-1 text-end">
+                                <button type="button" class="btn btn-link text-danger p-0" onclick="removeFromCart('${itemId}')">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    cartItemsContainer.appendChild(itemElement);
+                    animateCartItem(itemElement);
+                });
+                
+                updateSummary();
+                updateCartCount();
+            } catch (error) {
+                console.error('Error rendering cart:', error);
+                if (emptyCartMessage) {
+                    emptyCartMessage.classList.remove('d-none');
+                    emptyCartMessage.textContent = 'Error loading cart items. Please refresh the page.';
+                }
+            }
+        }
+        
+        // Initialize the cart and render
+        function initCart() {
+            // Load cart from the cart manager
+            cartItems = cartManager.getCartItems ? cartManager.getCartItems() : [];
+            
+            // Render the cart
+            renderCart();
+            
+            // Update the summary
+            updateSummary();
+            
+            // Update cart count
+            updateCartCount();
+        }
+        
+        // Handle checkout
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', function() {
+                if (!cartItems || cartItems.length === 0) {
+                    alert('Your cart is empty!');
+                    return;
+                }
+                window.location.href = 'checkout.html';
+            });
+        }
+        
+        // Initialize the cart when the page loads
+        document.addEventListener('DOMContentLoaded', initCart);
+        
+        // Create snowflakes animation
+        createSnowflakes();
+    });
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --light-bg: #f8f9ff;
+            --gradient: linear-gradient(135deg, #4361ee 0%, #3f37c9 50%, #4cc9f0 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            padding-top: 80px;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Cart Container */
+        .cart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        /* Product Image */
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Quantity Controls */
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+            margin: 0 5px;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+        }
+
+        /* Checkout Button */
+        .btn-checkout {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Empty Cart Message */
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px dashed rgba(67, 97, 238, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .empty-cart:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+        }
+
+        .empty-cart i {
+            font-size: 5rem;
+            background: var(--gradient);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cart-container {
+                padding: 1.5rem;
+            }
+            
+            .product-image {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .summary-card {
+                position: static;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(43, 45, 66, 0.98); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); z-index: 1030; box-shadow: 0 2px 15px rgba(0,0,0,0.1);">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="./img/img/logo.png" alt="Winter Collection" class="me-2" style="height: 32px;">
+                <span class="fw-bold d-none d-md-inline">WINTER</span>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Navigation Links -->
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="index.html">HOME</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="new-arrivals.html">NEW ARRIVALS</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link active fw-bold" href="collections.html">COLLECTIONS</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="sale.html">SALE</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="contact.html">CONTACT</a>
+                    </li>
+                </ul>
+
+                <!-- Right Side Icons -->
+                <div class="d-flex align-items-center">
+                    <!-- Search Toggle -->
+                    <button class="btn btn-link text-white me-2" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="false" aria-controls="searchCollapse">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    
+                    <!-- Account -->
+                    <a href="login.html" class="btn btn-link text-white me-2" title="Account">
+                        <i class="far fa-user"></i>
+                    </a>
+                    
+                    <!-- Cart -->
+                    <a href="cart.html" class="btn btn-link text-white position-relative" title="Cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">0</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Search Bar (Collapsible) -->
+            <div class="collapse w-100" id="searchCollapse">
+                <div class="d-flex mt-2">
+                    <input class="form-control me-2" type="search" placeholder="Search products..." aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Content -->
+    <div class="container my-5 flex-grow-1">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-container">
+                    <h2 class="mb-4 d-flex align-items-center">
+                        <i class="fas fa-snowflake me-2" style="color: #4cc9f0;"></i>
+                        Your Shopping Cart
+                        <span class="badge bg-primary rounded-pill ms-2" id="cartCount">0</span>
+                    </h2>
+                    
+                    <!-- Cart Items -->
+                    <div id="cartItems">
+                        <!-- Cart items will be dynamically added here -->
+                    </div>
+                    
+                    <!-- Empty Cart Message -->
+                    <div id="emptyCart" class="empty-cart d-none">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p class="text-muted" style ="color: red !important;">Looks like you haven't added anything to your cart yet.</p>
+                        <a href="collections.html" class="btn btn-primary mt-3">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="summary-card bg-white p-4 rounded shadow-sm">
+                    <h4 class="mb-4 fw-bold" style="color: #4361ee;">Order Summary</h4>
+                    
+                    <!-- Item Count -->
+                    <div class="d-flex justify-content-between mb-2 small text-muted">
+                        <span>Items (<span id="itemCount">0</span>):</span>
+                        <span id="subtotal">$0.00</span>
+                    </div>
+                    
+                    <!-- Shipping -->
+                    <div class="d-flex justify-content-between mb-2 small text-muted">
+                        <span>Shipping:</span>
+                        <span id="shipping">Calculating...</span>
+                    </div>
+                    
+                    <!-- Tax -->
+                    <div class="d-flex justify-content-between mb-3 pb-2 border-bottom small text-muted">
+                        <span>Tax (8%):</span>
+                        <span id="tax">$0.00</span>
+                    </div>
+                    
+                    <!-- Total -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0 fw-bold">Total:</h5>
+                        <h4 id="total" class="mb-0 fw-bold" style="color: #4361ee;">$0.00</h4>
+                    </div>
+                    
+                    <!-- Checkout Button -->
+                    <button class="btn btn-primary w-100 py-3 fw-bold" id="checkoutBtn" 
+                            style="background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%); border: none;">
+                        <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                    </button>
+                    
+                    <!-- Continue Shopping -->
+                    <p class="text-center text-muted mt-3 small">
+                        or <a href="collections.html" class="text-primary text-decoration-none">continue shopping</a>
+                    </p>
+                    
+                    <!-- Secure Checkout Badge -->
+                    <div class="text-center mt-3">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <i class="fas fa-lock me-2 text-muted small"></i>
+                            <small class="text-muted">Secure Checkout</small>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2 mt-2">
+                            <i class="fab fa-cc-visa text-muted"></i>
+                            <i class="fab fa-cc-mastercard text-muted"></i>
+                            <i class="fab fa-cc-amex text-muted"></i>
+                            <i class="fab fa-cc-paypal text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Winter-themed Footer -->
+    <footer class="py-3 mt-4" style="background: linear-gradient(135deg, #2b2d42 0%, #1a1a2e 100%); color: white; font-size: 0.85rem;">
+        <div class="container">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <h6 class="mb-2">Winter Collection</h6>
+                    <p class="small text-muted mb-2" style="color: white !important;">Your one-stop shop for the latest winter fashion trends.</p>
+                </div>
+                <div class="col-md-2">
+                    <h6 class="mb-2">Shop</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">New Arrivals</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Collections</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Sale</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h6 class="mb-2">Help</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Shipping Info</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Returns</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none" style="color: white !important;">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="mb-2">Newsletter</h6>
+                    <p class="small text-muted mb-2" style="color: white !important;">Subscribe for updates</p>
+                    <div class="input-group input-group-sm">
+                        <input type="email" class="form-control form-control-sm" placeholder="Your email" aria-label="Your email">
+                        <button class="btn btn-outline-light btn-sm" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="text-center small text-muted">
+                &copy; 2023 Winter Collection. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
