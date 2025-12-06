@@ -70,6 +70,69 @@ function updateCartCount() {
 // Expose updateCartCount to window for cart.js to use
 window.updateCartCount = updateCartCount;
 
+// Add to Cart functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listener for all Add to Cart buttons
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const product = {
+                id: this.getAttribute('data-id'),
+                name: this.getAttribute('data-name'),
+                price: parseFloat(this.getAttribute('data-price')),
+                image: this.getAttribute('data-image'),
+                quantity: 1
+            };
+            
+            addToCart(product);
+            
+            // Show success message
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                ${product.name} added to cart!
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
+            }, 100);
+            
+            // Update cart count
+            updateCartCount();
+        });
+    });
+});
+
+// Add item to cart
+function addToCart(product) {
+    let cart = JSON.parse(localStorage.getItem('winterCollectionCart') || '[]');
+    
+    // Check if product already exists in cart
+    const existingItem = cart.find(item => item.id === product.id);
+    
+    if (existingItem) {
+        // If item exists, increase quantity
+        existingItem.quantity += 1;
+    } else {
+        // Otherwise add new item
+        cart.push(product);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('winterCollectionCart', JSON.stringify(cart));
+    
+    // Update cart count in UI
+    updateCartCount();
+}
+
 // Create snowflakes for winter effect
 function createSnowflakes() {
     const snowflakes = ['❄', '❅', '❆', '•', '·'];

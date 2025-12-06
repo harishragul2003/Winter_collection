@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 
 // Import routes
 const cartRoutes = require('./routes/cartRoutes');
@@ -12,7 +13,8 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // Serve static files from the public directory
+// Serve static files from the root directory
+app.use(express.static(__dirname));
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/winter-collection', {

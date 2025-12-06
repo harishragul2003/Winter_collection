@@ -1,0 +1,93 @@
+/* User Dropdown Styles */
+#userSection {
+    position: relative;
+    margin-right: 0.25rem;
+    margin-left:12px;
+}
+
+#userSection .nav-link {
+    padding: 0.2rem 0.4rem;
+    color: var(--text-color);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+#userSection .nav-link:hover, 
+#userSection .nav-link:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--primary-color);
+    border-color: rgba(0,0,0,0.15);
+}
+
+#userSection .dropdown-menu {
+    border: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 0.5rem 0;
+    min-width: 200px;
+    margin-top: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#userSection .dropdown-item {
+    padding: 0.5rem 1.25rem;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+#userSection .dropdown-item i {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+#userSection .dropdown-item:hover {
+    background-color: var(--light-bg);
+    color: var(--primary-color);
+    padding-left: 1.5rem;
+}
+
+#userSection .dropdown-divider {
+    margin: 0.5rem 0;
+    border-color: rgba(0, 0, 0, 0.05);
+}
+
+#userSection .dropdown-item.text-danger:hover {
+    color: #dc3545 !important;
+    background-color: rgba(220, 53, 69, 0.05);
+}
+
+/* User email in navbar */
+#userEmail {
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: lowercase;
+    font-size: 0.9rem;
+    padding: 0 5px;
+}
+
+/* Responsive styles */
+@media (max-width: 767.98px) {
+    #userSection .dropdown-menu {
+        position: absolute !important;
+        right: 0;
+        left: auto;
+    }
+    
+    #userSection .nav-link {
+        padding: 0.5rem;
+    }
+    
+    #userEmail {
+        font-size: 0.8rem;
+    }
+}

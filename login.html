@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/auth.css">
     <style>
         :root {
             --primary-color: #4361ee;
@@ -56,6 +57,7 @@
         .login-container {
             max-width: 420px;
             width: 90%;
+          
             margin: 0 auto;
             padding: 2.5rem 2rem;
             background: rgba(255, 255, 255, 0.95);
@@ -87,6 +89,7 @@
             margin-bottom: 0.5rem;
             background: var(--gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             display: inline-block;
         }
@@ -417,11 +420,146 @@
         // Initialize snowflakes
         window.addEventListener('load', createSnowflakes);
         
+        // Function to validate email format
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        // Function to show error message
+        function showError(element, message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback d-block';
+            errorDiv.textContent = message;
+            
+            // Remove any existing error message
+            const existingError = element.parentNode.querySelector('.invalid-feedback');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            element.classList.add('is-invalid');
+            element.parentNode.appendChild(errorDiv);
+        }
+
+        // Function to remove error
+        function removeError(element) {
+            element.classList.remove('is-invalid');
+            const existingError = element.parentNode.querySelector('.invalid-feedback');
+            if (existingError) {
+                existingError.remove();
+            }
+        }
+
+        // Login form submission
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Add your login logic here
-            alert('Login functionality will be implemented soon!');
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+            let isValid = true;
+
+            // Reset previous errors
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+
+            // Validate email
+            if (!email) {
+                showError(document.getElementById('email'), 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError(document.getElementById('email'), 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            // Validate password
+            if (!password) {
+                showError(document.getElementById('password'), 'Password is required');
+                isValid = false;
+            } else if (password.length < 6) {
+                showError(document.getElementById('password'), 'Password must be at least 6 characters long');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Show loading state
+            const submitBtn = document.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Signing in...';
+
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // In a real application, you would make an API call here
+                console.log('Login attempt with:', { email, rememberMe });
+                
+                // Check credentials
+                if ((email === 'harishragulk@gmail.com' && password === '123456789') || 
+                    (email === 'user@example.com' && password === 'password123')) {
+                    // Store login state in localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userEmail', email);
+                    
+                    if (rememberMe) {
+                        // Set a cookie that expires in 7 days
+                        const date = new Date();
+                        date.setTime(date.getTime() + (7 * 24 * 60 * 60 * 1000));
+                        document.cookie = `rememberMe=true; expires=${date.toUTCString()}; path=/`;
+                    }
+                    
+                    // Redirect to home page after successful login
+                    window.location.href = 'index.html';
+                } else {
+                    // Show error message for invalid credentials
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger mt-3';
+                    errorDiv.textContent = 'Invalid email or password. Please try again.';
+                    
+                    const existingAlert = document.querySelector('.alert');
+                    if (existingAlert) {
+                        existingAlert.remove();
+                    }
+                    
+                    document.querySelector('.login-container').insertBefore(errorDiv, document.querySelector('form'));
+                    
+                    // Reset form
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            }, 1500);
         });
+
+        // Add input event listeners for real-time validation
+        document.getElementById('email').addEventListener('input', function() {
+            if (this.value.trim()) {
+                if (validateEmail(this.value.trim())) {
+                    removeError(this);
+                }
+            } else {
+                removeError(this);
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            if (this.value.trim()) {
+                removeError(this);
+            }
+        });
+
+        // Check if user is already logged in
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const rememberMe = document.cookie.split(';').some((item) => item.trim().startsWith('rememberMe='));
+            
+            if (isLoggedIn === 'true' || rememberMe) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Check auth status when page loads
+        window.addEventListener('load', checkAuth);
     </script>
 </body>
 </html>

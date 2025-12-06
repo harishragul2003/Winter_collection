@@ -146,29 +146,30 @@ class CartManager {
     // Add item to cart
     async addToCart(product) {
         try {
+            // Make sure we have a valid product
             if (!product || !product.id) {
-                throw new Error('Invalid product data');
+                console.error('Invalid product:', product);
+                return false;
             }
+
+            // Load the latest cart first
+            await this.loadCart();
             
             // Check if product already exists in cart
-            const existingItemIndex = this.cart.findIndex(item => item.id === product.id || item.productId === product.id);
+            const existingItem = this.cart.find(item => item.id === product.id);
             
-            if (existingItemIndex >= 0) {
-                // Update quantity if item exists
-                const updatedCart = [...this.cart];
-                updatedCart[existingItemIndex].quantity = (parseInt(updatedCart[existingItemIndex].quantity) || 0) + 1;
-                this.cart = updatedCart;
+            if (existingItem) {
+                // Update quantity if item already in cart
+                existingItem.quantity = (parseInt(existingItem.quantity) || 1) + (parseInt(product.quantity) || 1);
             } else {
-                // Add new item
-                const newItem = {
+                // Add new item to cart
+                this.cart.push({
                     id: product.id,
-                    productId: product.id,
                     name: product.name || 'Product',
-                    price: typeof product.price === 'number' ? product.price : parseFloat(String(product.price || '0').replace(/[^0-9.-]+/g,"")),
-                    quantity: 1,
-                    image: product.image || 'img/placeholder.jpg'
-                };
-                this.cart = [...this.cart, newItem];
+                    price: parseFloat(product.price) || 0,
+                    image: product.image || '',
+                    quantity: parseInt(product.quantity) || 1
+                });
             }
             
             // Save to localStorage immediately for better UX
@@ -422,18 +423,13 @@ class CartManager {
         });
                 }
             }
-        });
-    });
-}
-}
+        
 
-// Initialize cart manager
-const cartManager = new CartManager();
-
-// Update cart count when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    cartManager.updateCartCount();
+// Initialize CartManager when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize cart manager and make it globally available
+    window.cartManager = new CartManager();
+    
+    // Update cart count when the page loads
+    window.cartManager.updateCartCount();
 });
-
-// Expose to window for easy access in other scripts
-window.cartManager = cartManager;
