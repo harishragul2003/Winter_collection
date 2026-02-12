@@ -1,0 +1,11 @@
+{
+  "deploymentId": "winter-collection-v2",
+  "timestamp": "2026-02-12T12:30:00Z",
+  "version": "1.0.1",
+  "fixes": [
+    "Removed CSP restrictions",
+    "Fixed static file serving",
+    "Updated vercel.json configuration",
+    "Added health check endpoint"
+  ]
+}

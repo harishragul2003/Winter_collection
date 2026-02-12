@@ -28,6 +28,16 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/winter-co
 // Routes
 app.use('/api/cart', cartRoutes);
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        version: '1.0.1',
+        message: 'Winter Collection API is running'
+    });
+});
+
 // Handle all routes - serve index.html for non-API routes
 app.get('*', (req, res) => {
     // Skip API routes
