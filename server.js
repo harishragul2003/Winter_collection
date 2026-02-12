@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
+const fs = require('fs');
 
 // Import routes
 const cartRoutes = require('./routes/cartRoutes');
@@ -27,13 +28,25 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/winter-co
 // Routes
 app.use('/api/cart', cartRoutes);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('build'));
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-    });
-}
+// Handle all routes - serve index.html for non-API routes
+app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API route not found' });
+    }
+    
+    // Serve static files
+    const filePath = path.join(__dirname, req.path);
+    const fs = require('fs');
+    
+    // Check if file exists
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        return res.sendFile(filePath);
+    }
+    
+    // For all other routes, serve index.html
+    res.sendFile(path.resolve(__dirname, 'index.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
