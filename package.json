@@ -1,11 +1,12 @@
 {
   "name": "winter-collection",
-  "version": "1.0.1",
-  "description": "Winter Collection E-commerce Website",
+  "version": "2.0.0",
+  "description": "Winter Collection E-commerce Website - Fixed Vercel Deployment",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "vercel-build": "echo 'Build completed successfully'"
   },
   "dependencies": {
     "cors": "^2.8.5",

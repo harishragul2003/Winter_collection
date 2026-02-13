@@ -1,13 +1,10 @@
 {
   "version": 2,
-  "name": "winter-collection",
+  "name": "winter-collection-v2",
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
+      "use": "@vercel/node@3.0.0"
     }
   ],
   "routes": [
@@ -16,20 +13,11 @@
       "dest": "/server.js"
     },
     {
-      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|html))",
-      "dest": "/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/server.js"
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "server.js": {
-      "maxDuration": 30
-    }
   }
 }

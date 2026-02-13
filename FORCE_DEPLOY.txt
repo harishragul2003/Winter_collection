@@ -1,0 +1,12 @@
+FORCE DEPLOYMENT - 2026-02-12 12:35:00
+This file forces Vercel to recognize the latest changes.
+Latest commit should be: 0a87747
+Previous problematic commit was: e495d37
+
+Changes included:
+- Fixed CSP issues
+- Updated static file serving
+- Removed build directory dependency
+- Added health check endpoint
+
+DELETE THIS FILE AFTER SUCCESSFUL DEPLOYMENT
