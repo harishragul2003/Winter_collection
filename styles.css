@@ -1618,3 +1618,265 @@ body::after {
         margin-bottom: 15px;
     }
 }
+
+
+/* ============================================
+   ENHANCED ANIMATIONS & COLORFUL ADDITIONS
+   ============================================ */
+
+/* Animated gradient background for body */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8f4fd 50%, #fce4ec 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ---- Snowfall Canvas ---- */
+#snowCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+/* ---- Navbar rainbow underline on hover ---- */
+.nav-link {
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: background-position 0.5s ease, transform 0.2s ease;
+}
+.nav-link:hover {
+    background-position: right center;
+    transform: translateY(-2px);
+}
+/* Keep white on dark navbar */
+.navbar:not(.scrolled) .nav-link {
+    -webkit-text-fill-color: white;
+    background: none;
+}
+
+/* ---- Hero section animated gradient ---- */
+.hero-section {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #1a1a2e, #16213e) !important;
+    background-size: 400% 400% !important;
+    animation: heroGradient 12s ease infinite !important;
+}
+
+@keyframes heroGradient {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Glowing orbs in hero */
+.hero-shapes .shape {
+    animation: orbFloat 10s ease-in-out infinite, colorShift 8s ease-in-out infinite !important;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    33%       { transform: translateY(-30px) scale(1.1); }
+    66%       { transform: translateY(20px) scale(0.95); }
+}
+
+@keyframes colorShift {
+    0%   { filter: blur(60px) hue-rotate(0deg); }
+    50%  { filter: blur(80px) hue-rotate(180deg); }
+    100% { filter: blur(60px) hue-rotate(360deg); }
+}
+
+/* ---- Animated text gradient for hero title ---- */
+.text-gradient {
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff, #ff6b6b) !important;
+    background-size: 300% auto !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: rainbowText 4s linear infinite !important;
+}
+
+@keyframes rainbowText {
+    0%   { background-position: 0% center; }
+    100% { background-position: 300% center; }
+}
+
+/* ---- Product card colorful glow on hover ---- */
+.product-card:nth-child(1):hover { box-shadow: 0 25px 50px rgba(255, 107, 107, 0.35); border-top: 3px solid #ff6b6b; }
+.product-card:nth-child(2):hover { box-shadow: 0 25px 50px rgba(255, 217, 61, 0.35);  border-top: 3px solid #ffd93d; }
+.product-card:nth-child(3):hover { box-shadow: 0 25px 50px rgba(107, 203, 119, 0.35); border-top: 3px solid #6bcb77; }
+.product-card:nth-child(4):hover { box-shadow: 0 25px 50px rgba(77, 150, 255, 0.35);  border-top: 3px solid #4d96ff; }
+
+/* ---- Product badge colors ---- */
+.product-badge.new  { background: linear-gradient(135deg, #6bcb77, #4d96ff); color: #fff; }
+.product-badge.sale { background: linear-gradient(135deg, #ff6b6b, #ffd93d); color: #fff; }
+
+/* ---- Shimmer effect on product images ---- */
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+.product-image::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -75%;
+    width: 50%;
+    height: 200%;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+    transform: skewX(-20deg);
+    transition: none;
+}
+.product-card:hover .product-image::after {
+    animation: shimmer 0.7s ease forwards;
+}
+@keyframes shimmer {
+    0%   { left: -75%; }
+    100% { left: 125%; }
+}
+
+/* ---- Add to cart button rainbow pulse ---- */
+.add-to-cart-btn {
+    background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+.add-to-cart-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+.add-to-cart-btn:hover::before { opacity: 1; }
+.add-to-cart-btn span, .add-to-cart-btn i { position: relative; z-index: 1; }
+.add-to-cart-btn:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4) !important;
+}
+
+/* ---- Section header animated underline ---- */
+.section-header h2 {
+    position: relative;
+    display: inline-block;
+}
+.section-header h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff);
+    animation: expandLine 1.5s ease forwards 0.5s;
+}
+@keyframes expandLine {
+    to { width: 80%; }
+}
+
+/* ---- Floating particles (CSS only) ---- */
+.particle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: particleDrift linear infinite;
+    opacity: 0.5;
+}
+@keyframes particleDrift {
+    0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.5; }
+    90%  { opacity: 0.5; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+/* ---- Scroll reveal animation ---- */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ---- Colorful feature icons ---- */
+.feature-icon:nth-child(1) { background: linear-gradient(135deg, #ff6b6b, #ffd93d) !important; }
+.feature-icon:nth-child(2) { background: linear-gradient(135deg, #6bcb77, #4d96ff) !important; }
+
+/* ---- View All button animated border ---- */
+#featured-products .btn-outline-dark {
+    position: relative;
+    border: none !important;
+    color: #2c3e50;
+    background: transparent;
+    z-index: 1;
+}
+#featured-products .btn-outline-dark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    padding: 2px;
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    background-size: 300% auto;
+    animation: borderRotate 3s linear infinite;
+}
+@keyframes borderRotate {
+    0%   { background-position: 0% center; }
+    100% { background-position: 300% center; }
+}
+#featured-products .btn-outline-dark:hover {
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff) !important;
+    color: #fff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+}
+
+/* ---- Navbar logo glow ---- */
+.navbar-brand {
+    animation: logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse {
+    0%, 100% { filter: drop-shadow(0 0 4px rgba(77, 150, 255, 0.4)); }
+    50%       { filter: drop-shadow(0 0 12px rgba(199, 125, 255, 0.7)); }
+}
+
+/* ---- Cart icon bounce on load ---- */
+#cartIcon {
+    animation: cartBounce 1s ease 1s both;
+}
+@keyframes cartBounce {
+    0%, 100% { transform: translateY(0); }
+    30%       { transform: translateY(-8px); }
+    60%       { transform: translateY(-4px); }
+}
+
+/* ---- Colorful scrollbar ---- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff);
+    border-radius: 4px;
+}

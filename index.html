@@ -164,8 +164,8 @@
             
             <div class="row g-4">
                 <!-- Product 1 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card h-100">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                    <div class="product-card h-100" style="--i:1">
                         <div class="product-badge new">New</div>
                         <div class="product-image">
                             <img src="img/img/img1.jpeg" alt="Winter Parka" class="img-fluid">
@@ -192,8 +192,8 @@
                 </div>
                 
                 <!-- Product 2 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card h-100">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-card h-100" style="--i:2">
                         <div class="product-badge sale">Sale</div>
                         <div class="product-image">
                             <img src="img/img/img2.jpeg" alt="Knit Sweater" class="img-fluid">
@@ -223,8 +223,8 @@
                 </div>
                 
                 <!-- Product 3 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card h-100">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="product-card h-100" style="--i:3">
                         <div class="product-badge new">New</div>
                         <div class="product-image">
                             <img src="img/img/img3.jpeg" alt="Winter Boots" class="img-fluid">
@@ -251,8 +251,8 @@
                 </div>
                 
                 <!-- Product 4 -->
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card h-100">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="product-card h-100" style="--i:4">
                         <div class="product-badge new">New</div>
                         <div class="product-image">
                             <img src="img/img/img4.jpeg" alt="Puffer Jacket" class="img-fluid">
@@ -553,5 +553,108 @@
     <script src="js/search.js"></script>
     <script src="js/collections.js"></script>
     <script src="script.js"></script>
+
+    <!-- Snowfall Canvas -->
+    <canvas id="snowCanvas"></canvas>
+
+    <script>
+    // ---- Snowfall ----
+    (function() {
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        let flakes = [];
+
+        function resize() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const colors = ['#a8d8ea','#aa96da','#fcbad3','#ffffd2','#b5ead7','#c7ceea'];
+
+        for (let i = 0; i < 120; i++) {
+            flakes.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                r: Math.random() * 4 + 1,
+                d: Math.random() * 1.5 + 0.3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                swing: Math.random() * 2 - 1,
+                angle: Math.random() * Math.PI * 2
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            flakes.forEach(f => {
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                ctx.fillStyle = f.color;
+                ctx.globalAlpha = 0.7;
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+        }
+
+        function update() {
+            flakes.forEach(f => {
+                f.angle += 0.01;
+                f.y += f.d;
+                f.x += Math.sin(f.angle) * f.swing;
+                if (f.y > canvas.height) {
+                    f.y = -10;
+                    f.x = Math.random() * canvas.width;
+                }
+                if (f.x > canvas.width) f.x = 0;
+                if (f.x < 0) f.x = canvas.width;
+            });
+        }
+
+        function loop() {
+            draw();
+            update();
+            requestAnimationFrame(loop);
+        }
+        loop();
+    })();
+
+    // ---- Floating color particles ----
+    (function() {
+        const colors = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#c77dff','#ff9a3c'];
+        for (let i = 0; i < 18; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 14 + 6;
+            p.style.cssText = `
+                width:${size}px; height:${size}px;
+                background:${colors[i % colors.length]};
+                left:${Math.random() * 100}vw;
+                bottom:-20px;
+                animation-duration:${Math.random() * 12 + 8}s;
+                animation-delay:${Math.random() * 10}s;
+                opacity:0.4;
+            `;
+            document.body.appendChild(p);
+        }
+    })();
+
+    // ---- Scroll reveal ----
+    (function() {
+        const targets = document.querySelectorAll('.product-card, .section-header, .hero-content');
+        targets.forEach(el => el.classList.add('reveal'));
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        targets.forEach(el => observer.observe(el));
+    })();
+    </script>
 </body>
 </html>
