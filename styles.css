@@ -1880,3 +1880,14 @@ body {
     background: linear-gradient(180deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff);
     border-radius: 4px;
 }
+
+
+/* ---- Uniform Add to Cart button size ---- */
+.add-to-cart-btn {
+    width: 130px !important;
+    min-width: 130px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    padding: 6px 12px !important;
+    font-size: 0.78rem !important;
+}
