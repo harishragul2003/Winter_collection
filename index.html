@@ -4,10 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winter Collection</title>
+    <!-- Preconnect to speed up external resources -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Preload critical local images -->
+    <link rel="preload" as="image" href="img/img/img1.jpeg">
+    <link rel="preload" as="image" href="img/img/img2.jpeg">
+    <link rel="preload" as="image" href="img/img/img3.jpeg">
+    <link rel="preload" as="image" href="img/img/img4.jpeg">
+    <link rel="preload" as="image" href="img/img/logo.png">
     <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
@@ -134,10 +148,10 @@
                     <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left">
                         <div class="hero-image-wrapper">
                             <div class="hero-main-image">
-                                <img src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Winter Fashion" class="img-fluid rounded-4 shadow-lg">
+                                <img src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Winter Fashion" class="img-fluid rounded-4 shadow-lg" loading="eager" fetchpriority="high">
                             </div>
                             <div class="floating-image floating-1">
-                                <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Winter Accessories" class="img-fluid rounded-3 shadow">
+                                <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Winter Accessories" class="img-fluid rounded-3 shadow" loading="lazy">
                             </div>
                             <!-- <div class="floating-image floating-2">
                                 <img src="https://images.unsplash.com/photo-1551028719-00167d8e8a1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Winter Boots" class="img-fluid rounded-3 shadow">
@@ -168,7 +182,7 @@
                     <div class="product-card h-100" style="--i:1">
                         <div class="product-badge new">New</div>
                         <div class="product-image">
-                            <img src="img/img/img1.jpeg" alt="Winter Parka" class="img-fluid">
+                            <img src="img/img/img1.jpeg" alt="Winter Parka" class="img-fluid" loading="eager" fetchpriority="high">
                             <div class="product-actions">
                                 <button class="btn-action" title="Add to Wishlist"><i class="far fa-heart"></i></button>
                                 <button class="btn-action" title="Quick View"><i class="fas fa-eye"></i></button>
@@ -196,7 +210,7 @@
                     <div class="product-card h-100" style="--i:2">
                         <div class="product-badge sale">Sale</div>
                         <div class="product-image">
-                            <img src="img/img/img2.jpeg" alt="Knit Sweater" class="img-fluid">
+                            <img src="img/img/img2.jpeg" alt="Knit Sweater" class="img-fluid" loading="lazy">
                             <div class="product-actions">
                                 <button class="btn-action" title="Add to Wishlist"><i class="far fa-heart"></i></button>
                                 <button class="btn-action" title="Quick View"><i class="fas fa-eye"></i></button>
@@ -227,7 +241,7 @@
                     <div class="product-card h-100" style="--i:3">
                         <div class="product-badge new">New</div>
                         <div class="product-image">
-                            <img src="img/img/img3.jpeg" alt="Winter Boots" class="img-fluid">
+                            <img src="img/img/img3.jpeg" alt="Winter Boots" class="img-fluid" loading="lazy">
                             <div class="product-actions">
                                 <button class="btn-action" title="Add to Wishlist"><i class="far fa-heart"></i></button>
                                 <button class="btn-action" title="Quick View"><i class="fas fa-eye"></i></button>
@@ -255,7 +269,7 @@
                     <div class="product-card h-100" style="--i:4">
                         <div class="product-badge new">New</div>
                         <div class="product-image">
-                            <img src="img/img/img4.jpeg" alt="Puffer Jacket" class="img-fluid">
+                            <img src="img/img/img4.jpeg" alt="Puffer Jacket" class="img-fluid" loading="lazy">
                             <div class="product-actions">
                                 <button class="btn-action" title="Add to Wishlist"><i class="far fa-heart"></i></button>
                                 <button class="btn-action" title="Quick View"><i class="fas fa-eye"></i></button>
@@ -558,6 +572,18 @@
     <canvas id="snowCanvas"></canvas>
 
     <script>
+    // ---- Image fade-in on load ----
+    (function() {
+        document.querySelectorAll('.product-image img').forEach(img => {
+            if (img.complete) {
+                img.classList.add('loaded');
+            } else {
+                img.addEventListener('load', () => img.classList.add('loaded'));
+                img.addEventListener('error', () => img.classList.add('loaded'));
+            }
+        });
+    })();
+
     // ---- Snowfall ----
     (function() {
         const canvas = document.getElementById('snowCanvas');
